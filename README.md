@@ -25,3 +25,23 @@ cmake CMakeLists.txt
   - Zooming
   - Smooth Transition
   - Tracing Specified Body
+
+# Screenshot
+
+![bitmask](./screenshots/bitmask.png)
+
+![bridge](./screenshots/bridge.png)
+
+![chain](./screenshots/chain.png)
+
+![domino](./screenshots/domino.png)
+
+![friction](./screenshots/friction.png)
+
+![newtoncradle](./screenshots/newtoncradle.png)
+
+![restitution](./screenshots/restitution.png)
+
+![stacking](./screenshots/stacking.png)
+
+![wrecking ball](./screenshots/wrecking-ball.png)
