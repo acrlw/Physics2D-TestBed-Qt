@@ -1,12 +1,10 @@
-﻿// Physics2D-TestBed-Qt.cpp: 定义应用程序的入口点。
-//
+﻿
+#include "include/testbed.h"
 
-
-#include <iostream>
-#include "dependencies/Physics2D/include/physics2d.h"
-int main()
+int main(int argc, char* argv[])
 {
-	Physics2D::Vector2 a(1, 2);
-	std::cout << a.x << ", " << a.y << std::endl;
-	return 0;
+	QApplication app(argc, argv);
+	Physics2D::TestBed testbed;
+	testbed.show();
+	return app.exec();
 }
