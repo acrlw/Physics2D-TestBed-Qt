@@ -1,6 +1,6 @@
 # Physics2D-TestBed-Qt
 
-The testbed of Physics2D, using Qt.
+The testbed of Physics2D based on Qt.
 
 # Build
 
