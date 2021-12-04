@@ -1,6 +1,6 @@
 # Physics2D-TestBed-Qt
 
-Simple TestBed of 2D Physics Engine For Tutoring.
+The testbed of Physics2D, using Qt.
 
 # Build
 
