@@ -12,24 +12,24 @@ namespace Physics2D
 
 		createControlPanel();
 
-		m_world.setEnableGravity(true);
-		m_world.setGravity({ 0, -9.8f });
-		m_world.setLinearVelocityDamping(0.1f);
-		m_world.setAirFrictionCoefficient(0.8f);
-		m_world.setAngularVelocityDamping(0.1f);
-		m_world.setEnableDamping(true);
-		m_world.setPositionIteration(8);
-		m_world.setVelocityIteration(6);
+		m_system.world().setEnableGravity(true);
+		m_system.world().setGravity({ 0, -9.8f });
+		m_system.world().setLinearVelocityDamping(0.1f);
+		m_system.world().setAirFrictionCoefficient(0.8f);
+		m_system.world().setAngularVelocityDamping(0.1f);
+		m_system.world().setEnableDamping(true);
+		m_system.positionIteration() = 8;
+		m_system.velocityIteration() = 6;
 
 		m_pointJointPrimitive.bodyA = nullptr;
-		m_mouseJoint = m_world.createJoint(m_pointJointPrimitive);
+		m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
 		m_mouseJoint->setActive(false);
 
 		m_camera.setViewport(Camera::Viewport(Vector2(0, 0), Vector2(1920, 1080)));
-		m_camera.setWorld(&m_world);
+		m_camera.setWorld(&m_system.world());
 		m_camera.setDbvh(&m_dbvh);
-		m_camera.setTree(&m_tree);
-		m_camera.setContactMaintainer(&m_maintainer);
+		m_camera.setTree(&m_system.tree());
+		m_camera.setContactMaintainer(&m_system.maintainer());
 
 		m_camera.setAabbVisible(false);
 		m_camera.setDbvhVisible(false);
@@ -58,38 +58,10 @@ namespace Physics2D
 	}
 	void TestBed::step()
 	{
-		for (auto& elem : m_world.bodyList())
-			m_tree.update(elem.get());
-
 		if (m_currentFrame != nullptr)
 			m_currentFrame->update(dt);
 
-		m_world.stepVelocity(dt);
-
-		auto potentialList = m_tree.generate();
-		for (auto pair : potentialList)
-		{
-			auto result = Detector::detect(pair.first, pair.second);
-			if (result.isColliding)
-				m_maintainer.add(result);
-		}
-		m_maintainer.clearInactivePoints();
-		m_world.prepareVelocityConstraint(dt);
-
-		for (int i = 0; i < m_world.velocityIteration(); ++i)
-		{
-			m_world.solveVelocityConstraint(dt);
-			m_maintainer.solveVelocity(dt);
-		}
-
-		m_world.stepPosition(dt);
-
-		for (int i = 0; i < m_world.positionIteration(); ++i)
-		{
-			m_maintainer.solvePosition(dt);
-			m_world.solvePositionConstraint(dt);
-		}
-		m_maintainer.deactivateAllPoints();
+		m_system.step(dt);
 
 	}
 
@@ -99,55 +71,58 @@ namespace Physics2D
 		switch (m_currentFrameIndex)
 		{
 		case 0:
-			m_currentFrame = new BitmaskFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new BitmaskFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 1:
-			m_currentFrame = new BridgeFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new BridgeFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 2:
-			m_currentFrame = new BroadPhaseFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new BroadPhaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 3:
-			m_currentFrame = new ChainFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new ChainFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 4:
-			m_currentFrame = new CollisionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new CollisionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 5:
-			m_currentFrame = new DominoFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new ContinuousFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 6:
-			m_currentFrame = new FrictionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new DominoFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 7:
-			m_currentFrame = new GeometryFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new FrictionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 8:
-			m_currentFrame = new JointsFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new GeometryFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 9:
-			m_currentFrame = new NarrowphaseFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new JointsFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 10:
-			m_currentFrame = new NewtonCradleFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new NarrowphaseFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 11:
-			m_currentFrame = new PendulumFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new NewtonCradleFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 12:
-			m_currentFrame = new RaycastFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new PendulumFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 13:
-			m_currentFrame = new RestitutionFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new RaycastFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 14:
-			m_currentFrame = new SensorFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new RestitutionFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 15:
-			m_currentFrame = new StackingFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new SensorFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		case 16:
-			m_currentFrame = new WreckingBallFrame(&m_world, &m_maintainer, &m_tree, &m_dbvh, &m_camera);
+			m_currentFrame = new StackingFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
+			break;
+		case 17:
+			m_currentFrame = new WreckingBallFrame(&m_system.world(), &m_system.maintainer(), &m_system.tree(), &m_dbvh, &m_camera);
 			break;
 		default:
 			break;
@@ -158,13 +133,13 @@ namespace Physics2D
 
 	void TestBed::clearAll()
 	{
-		m_world.clearAllBodies();
-		m_world.clearAllJoints();
-		m_maintainer.clearAll();
-		m_tree.clearAll();
+		m_system.world().clearAllBodies();
+		m_system.world().clearAllJoints();
+		m_system.maintainer().clearAll();
+		m_system.tree().clearAll();
 		m_dbvh.cleanUp(m_dbvh.root());
 		m_pointJointPrimitive.bodyA = nullptr;
-		m_mouseJoint = m_world.createJoint(m_pointJointPrimitive);
+		m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
 		m_mouseJoint->setActive(false);
 		if (m_currentFrame != nullptr)
 		{
@@ -184,7 +159,7 @@ namespace Physics2D
 		QVBoxLayout* mainLayout = new QVBoxLayout;
 		QComboBox* scenes = new QComboBox;
 		QStringList items;
-		items << "Bitmask" << "Bridge" << "Broadphase" << "Chain" << "Collision" << "Domino" << "Friction" <<
+		items << "Bitmask" << "Bridge" << "Broadphase" << "Chain" << "Collision" << "Continuous" << "Domino" << "Friction" <<
 			"Geometry" << "Joints" << "Narrowphase" << "Newton's Cradle" << "Pendulum" << "AABB Raycast" << "Restitution" << "Sensor" << "Stacking" <<
 			"Wrecking Ball";
 		scenes->addItems(items);
@@ -204,7 +179,7 @@ namespace Physics2D
 		QLabel* lblPosIter = new QLabel("Position Iterations: ");
 		QLabel* lblVelIter = new QLabel("Velocity Iterations: ");
 		QLabel* lblDtIter = new QLabel("Delta Time: ");
-		QLabel* lblBias = new QLabel("Contact Bias Factor: " + QString::number(m_maintainer.m_biasFactor));
+		QLabel* lblBias = new QLabel("Contact Bias Factor: " + QString::number(m_system.maintainer().m_biasFactor));
 		formLayout->addRow(new QLabel("Scenes: "), scenes);
 		formLayout->addRow(lblPosIter, posIter);
 		formLayout->addRow(lblVelIter, velIter);
@@ -223,12 +198,12 @@ namespace Physics2D
 
 		connect(posIter, &QSlider::valueChanged, this, [=](int value)
 			{
-				m_world.setPositionIteration(value);
+				m_system.positionIteration() = value;
 				lblPosIter->setText("Position Iterations: " + QString::number(value));
 			});
 		connect(velIter, &QSlider::valueChanged, this, [=](int value)
 			{
-				m_world.setVelocityIteration(value);
+				m_system.velocityIteration() = value;
 				lblVelIter->setText("Velocity Iterations: " + QString::number(value));
 			});
 		connect(deltaTime, &QSlider::valueChanged, this, [=](int value)
@@ -238,8 +213,8 @@ namespace Physics2D
 			});
 		connect(bias, &QSlider::valueChanged, this, [=](int value)
 			{
-				m_maintainer.m_biasFactor = static_cast<real>(value) / 1000.0f;
-				lblBias->setText("Contact Bias Factor: " + QString::number(m_maintainer.m_biasFactor));
+				m_system.maintainer().m_biasFactor = static_cast<real>(value) / 1000.0f;
+				lblBias->setText("Contact Bias Factor: " + QString::number(m_system.maintainer().m_biasFactor));
 			});
 
 
@@ -397,7 +372,7 @@ namespace Physics2D
 		mouseBox.width = 0.01f;
 		mouseBox.height = 0.01f;
 
-		for (auto& body : m_tree.query(mouseBox))
+		for (auto& body : m_system.tree().query(mouseBox))
 		{
 			Vector2 point = m_mousePos - body->position();
 			point = Matrix2x2(-body->rotation()).multiply(point);

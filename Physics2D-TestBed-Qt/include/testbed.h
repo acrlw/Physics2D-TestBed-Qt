@@ -11,6 +11,7 @@
 #include "scenes/broadphase.h"
 #include "scenes/chain.h"
 #include "scenes/collision.h"
+#include "scenes/continuous.h"
 #include "scenes/domino.h"
 #include "scenes/friction.h"
 #include "scenes/geometry.h"
@@ -67,9 +68,6 @@ namespace Physics2D
 
 		QWidget* m_controlPanel;
 
-		PhysicsWorld m_world;
-		ContactMaintainer m_maintainer;
-		Tree m_tree;
 		DBVH m_dbvh;
 		Body* m_selectedBody;
 		PointJoint* m_mouseJoint;
@@ -88,6 +86,8 @@ namespace Physics2D
 		Vector2 m_mousePos;
 
 		real dt = 1.0f / 120.0f;
+
+		PhysicsSystem m_system;
 	};
 
 
