@@ -7,8 +7,6 @@
 #include "../../collision/detector.h"
 namespace Physics2D
 {
-	using RelationID = uint64_t;
-	static RelationID generateRelation(Body* bodyA, Body* bodyB);
 	struct VelocityConstraintPoint
 	{
 		Vector2 ra;
@@ -31,7 +29,7 @@ namespace Physics2D
 	struct ContactConstraintPoint
 	{
 		ContactConstraintPoint() = default;
-		RelationID relation = 0;
+		Body::Relation::RelationID relation = 0;
 		real friction = 0.2f;
 		bool active = true;
 		Vector2 localA;
@@ -50,10 +48,10 @@ namespace Physics2D
 		void prepare(ContactConstraintPoint& ccp, const PointPair& pair, const Collision& collision);
 		void clearInactivePoints();
 		void deactivateAllPoints();
-		real m_maxPenetration = 0.01f;
-		real m_biasFactor = 0.03f;
+		real m_maxPenetration = 0.02f;
+		real m_biasFactor = 0.02f;
 		bool m_blockSolver = true;
-		std::map<RelationID, std::vector<ContactConstraintPoint>> m_contactTable;
+		std::map<Body::Relation::RelationID, std::vector<ContactConstraintPoint>> m_contactTable;
 	private:
 	};
 

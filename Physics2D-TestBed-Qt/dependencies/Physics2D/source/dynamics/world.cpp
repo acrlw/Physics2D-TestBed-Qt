@@ -21,6 +21,8 @@ namespace Physics2D
 		const Vector2 g = m_enableGravity ? m_gravity : Vector2{0.0, 0.0};
 		real lvd = 1.0f;
 		real avd = 1.0f;
+
+		//damping ratio from box2d
 		if(m_enableDamping)
 		{
 			lvd = 1.0f / (1.0f + dt * m_linearVelocityDamping);
@@ -40,12 +42,16 @@ namespace Physics2D
 			{
 				body->forces() += body->mass() * g;
 
+				if (body->sleep() && !body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
+					|| !fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
+					body->setSleep(false);
+
 				body->velocity() += body->inverseMass() * body->forces() * dt;
 				body->angularVelocity() += body->inverseInertia() * body->torques() * dt;
-
 				
 				body->velocity() *= lvd;
 				body->angularVelocity() *= avd;
+
 
 				break;
 			}
@@ -97,11 +103,31 @@ namespace Physics2D
 				break;
 			case Body::BodyType::Dynamic:
 			{
+				body->forces().clear();
+				body->clearTorque();
+
+				body->lastPosition() = body->position();
+				body->lastRotation() = body->rotation();
+
 				body->position() += body->velocity() * dt;
 				body->rotation() += body->angularVelocity() * dt;
 
-				body->forces().clear();
-				body->clearTorque();
+				if (body->sleep())
+					break;
+
+				if (body->lastPosition().fuzzyEqual(body->position(), Constant::MinLinearVelocity)
+					&& fuzzyRealEqual(body->lastRotation(), body->rotation(), Constant::MinAngularVelocity))
+					body->sleepCountdown()++;
+				else 
+					body->sleepCountdown() = 0;
+				
+				if (body->sleepCountdown() >= Constant::SleepCountdown) {
+					body->sleepCountdown() = 0;
+					body->setSleep(true);
+					body->velocity().clear();
+					body->angularVelocity() = 0.0f;
+				}
+
 				break;
 			}
 			case Body::BodyType::Kinematic:
@@ -120,6 +146,10 @@ namespace Physics2D
 
 				body->forces().clear();
 				body->clearTorque();
+
+				if (body->velocity().lengthSquare() < Constant::CCDMinVelocity * Constant::CCDMinVelocity
+					&& body->rotation() < Constant::CCDMinVelocity)
+					body->setType(Body::BodyType::Dynamic);
 				break;
 			}
 			}

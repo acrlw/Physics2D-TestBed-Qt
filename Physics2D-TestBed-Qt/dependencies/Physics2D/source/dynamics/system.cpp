@@ -34,6 +34,7 @@ namespace Physics2D
     }
     void PhysicsSystem::updateTree()
     {
+        //bvh
         for (auto& elem : m_world.bodyList())
             m_tree.update(elem.get());
     }
@@ -59,7 +60,7 @@ namespace Physics2D
                     real toi = finals.value();
                     solve(toi);
                     real ddt = (dt - toi) / real(Constant::CCDMaxIterations);
-                    for (int i = 0; i < Constant::CCDMaxIterations; i++) {
+                    for (int i = 0; i < Constant::CCDMaxIterations; ++i) {
                         updateTree();
                         solve(ddt);
                     }
@@ -73,14 +74,27 @@ namespace Physics2D
     }
     void PhysicsSystem::solve(const real& dt)
     {
+
+        //Sweep And Prune
+
+        //std::vector<Body*> bodies;
+        //bodies.reserve(m_world.bodyList().size());
+        //for(auto&& elem: m_world.bodyList())
+        //    bodies.emplace_back(elem.get());
+        //
+        //auto potentialList = SweepAndPrune::generate(bodies);
+
+
+        //BVH
         m_world.stepVelocity(dt);
 
         auto potentialList = m_tree.generate();
         for (auto pair : potentialList)
         {
             auto result = Detector::detect(pair.first, pair.second);
-            if (result.isColliding)
+            if (result.isColliding) {
                 m_maintainer.add(result);
+            }
         }
         m_maintainer.clearInactivePoints();
         m_world.prepareVelocityConstraint(dt);
@@ -90,14 +104,15 @@ namespace Physics2D
             m_world.solveVelocityConstraint(dt);
             m_maintainer.solveVelocity(dt);
         }
-
-        m_world.stepPosition(dt);
-
+        //solve penetration use contact pairs from previous velocity solver settings
+        //TODO: Can generate another contact table just for position solving
         for (int i = 0; i < m_positionIteration; ++i)
         {
             m_maintainer.solvePosition(dt);
             m_world.solvePositionConstraint(dt);
         }
+        m_world.stepPosition(dt);
+
         m_maintainer.deactivateAllPoints();
     }
 }

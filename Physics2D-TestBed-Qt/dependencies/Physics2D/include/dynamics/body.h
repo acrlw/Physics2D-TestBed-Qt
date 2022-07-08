@@ -21,6 +21,17 @@ namespace Physics2D
 	class Body
 	{
 	public:
+
+		struct Relation
+		{
+			using RelationID = uint64_t;
+			static RelationID generateRelationID(Body* bodyA, Body* bodyB);
+			static Relation generateRelation(Body* bodyA, Body* bodyB);
+			RelationID relationID;
+			Body* bodyA;
+			Body* bodyB;
+		};
+
 		enum class BodyType
 		{
 			Kinematic,
@@ -52,6 +63,10 @@ namespace Physics2D
 
 		real& torques();
 
+		Vector2& lastPosition();
+		real& lastRotation();
+		uint32_t& sleepCountdown();
+
 		Shape* shape() const;
 		void setShape(Shape* shape);
 
@@ -63,7 +78,7 @@ namespace Physics2D
 
 		real inertia() const;
 
-		AABB aabb(const real& factor = 1) const;
+		AABB aabb(const real& factor = Constant::AABBExpansionFactor) const;
 
 		real friction() const;
 		void setFriction(const real& friction);
@@ -92,6 +107,8 @@ namespace Physics2D
 
 		real restitution()const;
 		void setRestitution(const real& restitution);
+
+
 	private:
 		void calcInertia();
 
@@ -108,6 +125,9 @@ namespace Physics2D
 		real m_rotation = 0;
 		real m_angularVelocity = 0;
 
+		Vector2 m_lastPosition;
+		real m_lastRotation = 0;
+
 		Vector2 m_forces;
 		real m_torques = 0;
 
@@ -118,6 +138,7 @@ namespace Physics2D
 		real m_friction = 0.2f;
 		real m_restitution = 0.0f;
 		
+		uint32_t m_sleepCountdown = 0;
 
 		
 	};

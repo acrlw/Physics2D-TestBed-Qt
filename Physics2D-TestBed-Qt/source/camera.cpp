@@ -68,6 +68,8 @@ namespace Physics2D
 					primitive.transform = body->position();
 					if (body->sleep())
 						pen.setColor(Qt::gray);
+					else
+						pen.setColor(Qt::green);
 					RendererQtImpl::renderShape(painter, this, primitive, pen);
 					if (m_centerVisible)
 					{

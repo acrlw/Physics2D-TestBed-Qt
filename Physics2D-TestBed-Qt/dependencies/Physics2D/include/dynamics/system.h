@@ -5,6 +5,8 @@
 #include "../collision/detector.h"
 #include "../collision/broadphase/tree.h"
 #include "../collision/continuous/ccd.h"
+#include "../collision/broadphase/sap.h"
+#include "../collision/broadphase/grid.h"
 namespace Physics2D
 {
     class PhysicsSystem
@@ -22,13 +24,13 @@ namespace Physics2D
         void updateTree();
         void solve(const real& dt);
         bool solveCCD(const real& dt);
-        int m_positionIteration = 8;
-        int m_velocityIteration = 6;
+        int m_positionIteration = 6;
+        int m_velocityIteration = 8;
 
         PhysicsWorld m_world;
         ContactMaintainer m_maintainer;
         Tree m_tree;
-
+        UniformGrid m_grid;
     };
 
 }

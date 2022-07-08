@@ -18,8 +18,6 @@ namespace Physics2D
 		m_system.world().setAirFrictionCoefficient(0.8f);
 		m_system.world().setAngularVelocityDamping(0.1f);
 		m_system.world().setEnableDamping(true);
-		m_system.positionIteration() = 8;
-		m_system.velocityIteration() = 6;
 
 		m_pointJointPrimitive.bodyA = nullptr;
 		m_mouseJoint = m_system.world().createJoint(m_pointJointPrimitive);
@@ -218,8 +216,8 @@ namespace Physics2D
 			});
 
 
-		posIter->setValue(8);
-		velIter->setValue(6);
+		posIter->setValue(6);
+		velIter->setValue(8);
 		deltaTime->setValue(120);
 		bias->setValue(30);
 
@@ -376,7 +374,7 @@ namespace Physics2D
 		{
 			Vector2 point = m_mousePos - body->position();
 			point = Matrix2x2(-body->rotation()).multiply(point);
-			if (body->shape()->contains(point) && m_selectedBody == nullptr)
+			if (body->shape()->contains(point) && m_selectedBody == nullptr && body->type() != Body::BodyType::Static)
 			{
 				m_selectedBody = body;
 
