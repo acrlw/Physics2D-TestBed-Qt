@@ -2,7 +2,7 @@
 #define PHYSICS2D_SCENES_BROADPHASE_H
 #include <QRandomGenerator>
 
-#include "./include/frame.h"
+#include "frame.h"
 namespace Physics2D
 {
 	class BroadPhaseFrame : public Frame

@@ -6,7 +6,7 @@
 #include "QPen"
 #include "QBrush"
 
-#include "include/camera.h"
+#include "camera.h"
 namespace Physics2D
 {
     class RendererQtImpl

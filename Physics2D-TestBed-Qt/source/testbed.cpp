@@ -1,4 +1,4 @@
-#include "include/testbed.h"
+#include "testbed.h"
 
 namespace Physics2D
 {
@@ -32,7 +32,6 @@ namespace Physics2D
 		m_camera.setAabbVisible(false);
 		m_camera.setDbvhVisible(false);
 		m_camera.setTreeVisible(false);
-		m_camera.setAxisVisible(false);
 		m_camera.setGridScaleLineVisible(false);
 
 
@@ -235,7 +234,6 @@ namespace Physics2D
 		QCheckBox* cbGridVisible = new QCheckBox("Grid Scale Line Visible");
 		QCheckBox* cbTreeVisible = new QCheckBox("Tree Visible");
 		QCheckBox* cbContactVisible = new QCheckBox("Contacts Visible");
-		QCheckBox* cbAxisVisible = new QCheckBox("Axis Visible");
 		QCheckBox* cbUserDrawVisible = new QCheckBox("User Draw Visible");
 		cbBodyVisible->setChecked(true);
 		cbJointVisible->setChecked(true);
@@ -266,10 +264,6 @@ namespace Physics2D
 			{
 				m_camera.setContactVisible(state);
 			});
-		connect(cbAxisVisible, &QCheckBox::stateChanged, this, [&](int state)
-			{
-				m_camera.setAxisVisible(state);
-			});
 		connect(cbUserDrawVisible, &QCheckBox::stateChanged, this, [&](int state)
 			{
 				m_userDraw = state;
@@ -290,7 +284,6 @@ namespace Physics2D
 		vbSwitchers->addWidget(cbGridVisible);
 		vbSwitchers->addWidget(cbTreeVisible);
 		vbSwitchers->addWidget(cbContactVisible);
-		vbSwitchers->addWidget(cbAxisVisible);
 		vbSwitchers->addWidget(cbUserDrawVisible);
 		vbSwitchers->addWidget(cbAngleVisible);
 		vbSwitchers->addWidget(cbCenterVisible);

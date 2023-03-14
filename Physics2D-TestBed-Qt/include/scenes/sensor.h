@@ -1,6 +1,7 @@
 #ifndef PHYSICS2D_SCENES_SENSOR_H
 #define PHYSICS2D_SCENES_SENSOR_H
-#include "./include/frame.h"
+#include "frame.h"
+#include "../dependencies/Physics2D/circle.h"
 namespace Physics2D
 {
 	class SensorFrame : public Frame
@@ -13,14 +14,12 @@ namespace Physics2D
 		}
 		void load() override
 		{
-
 		}
 		void render(QPainter* painter) override
 		{
-
+			
 		}
 	private:
-
 	};
 }
 #endif

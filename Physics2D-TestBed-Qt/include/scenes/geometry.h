@@ -1,6 +1,6 @@
 #ifndef PHYSICS2D_SCENES_GEOMETRY_H
 #define PHYSICS2D_SCENES_GEOMETRY_H
-#include "./include/frame.h"
+#include "frame.h"
 
 namespace Physics2D
 {
@@ -51,6 +51,7 @@ namespace Physics2D
 
 			RendererQtImpl::renderPoints(painter, m_camera, points1, cyan);
 			RendererQtImpl::renderPoints(painter, m_camera, points2, magenta);
+
 		}
 	private:
 		std::vector<Vector2> points1;

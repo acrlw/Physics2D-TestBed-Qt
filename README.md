@@ -5,12 +5,13 @@ The testbed of Physics2D based on Qt.
 # Build
 
 ```
-cmake CMakeLists.txt
+xmake build
 ```
 
 # Requirement
 
-- C++ 17
+- C++ 20
+- [XMake](https://github.com/xmake-io/xmake)
 - Qt
 
 # Features

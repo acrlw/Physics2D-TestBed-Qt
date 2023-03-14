@@ -2,7 +2,7 @@
 #define PHYSICS2D_UTILS_CAMERA_H
 #include <QPainter>
 
-#include "dependencies/Physics2D/include/physics2d.h"
+#include "../dependencies/Physics2D/physics2d.h"
 namespace Physics2D
 {
     class Camera
@@ -31,9 +31,6 @@ namespace Physics2D
 
         bool bodyVisible() const;
         void setBodyVisible(bool bodyVisible);
-
-        bool axisVisible() const;
-        void setAxisVisible(bool axisVisible);
 
         bool gridScaleLineVisible()const;
         void setGridScaleLineVisible(bool visible);
@@ -102,7 +99,6 @@ namespace Physics2D
         bool m_aabbVisible = true;
         bool m_jointVisible = true;
         bool m_bodyVisible = true;
-        bool m_axisVisible = true;
         bool m_dbvhVisible = false;
         bool m_treeVisible = false;
         bool m_gridScaleLineVisible = false;

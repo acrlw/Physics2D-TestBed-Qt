@@ -5,7 +5,7 @@
 #include "camera.h"
 #include "render.h"
 
-#include "dependencies/Physics2D/include/physics2d.h"
+#include "../dependencies/Physics2D/physics2d.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>

@@ -1,10 +1,9 @@
 #ifndef PHYSICS2D_TESTBED_H
 #define PHYSICS2D_TESTBED_H
 
-#include "dependencies/Physics2D/include/physics2d.h"
+#include "../dependencies/Physics2D/physics2d.h"
 
 #include "camera.h"
-#include "QApplication"
 
 #include "scenes/bitmask.h"
 #include "scenes/bridge.h"
@@ -25,6 +24,7 @@
 #include "scenes/wreckingball.h"
 #include "scenes/pendulum.h"
 
+#include <QApplication>
 #include <QSlider>
 #include <QVBoxLayout>
 #include <QLabel>

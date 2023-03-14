@@ -1,5 +1,5 @@
-#include "include/camera.h"
-#include "include/render.h"
+#include "camera.h"
+#include "render.h"
 namespace Physics2D
 {
 	void Camera::render(QPainter* painter)
@@ -70,6 +70,8 @@ namespace Physics2D
 						pen.setColor(Qt::gray);
 					else
 						pen.setColor(Qt::green);
+					if (body->type() == Body::BodyType::Static)
+						pen.setColor(QColor(29, 233, 182));
 					RendererQtImpl::renderShape(painter, this, primitive, pen);
 					if (m_centerVisible)
 					{
@@ -85,28 +87,6 @@ namespace Physics2D
 				for (auto& joint : m_world->jointList())
 					if (joint->active())
 						RendererQtImpl::renderJoint(painter, this, joint.get(), pen);
-			}
-			if (m_axisVisible)
-			{
-				QColor color = Qt::green;
-				color.setAlphaF(0.8);
-				pen.setColor(color);
-				std::vector<Vector2> axisPoints;
-				axisPoints.reserve(static_cast<size_t>(m_axisPointCount * 2 + 1));
-
-				for (real i = -m_axisPointCount; i <= m_axisPointCount; i += 1.0)
-				{
-					axisPoints.emplace_back(Vector2(0, i));
-					axisPoints.emplace_back(Vector2(i, 0));
-				}
-				RendererQtImpl::renderPoints(painter, this, axisPoints, pen);
-				color = Qt::green;
-				color.setAlphaF(0.7);
-				pen.setColor(color);
-				pen.setWidth(1);
-				RendererQtImpl::renderLine(painter, this, Vector2(0, -m_axisPointCount), Vector2(0, m_axisPointCount), pen);
-				RendererQtImpl::renderLine(painter, this, Vector2(-m_axisPointCount, 0), Vector2(m_axisPointCount, 0), pen);
-
 			}
 			if (m_aabbVisible)
 			{
@@ -128,6 +108,25 @@ namespace Physics2D
 			}
 			if (m_gridScaleLineVisible)
 			{
+				QColor color = Qt::green;
+				color.setAlphaF(0.8);
+				pen.setColor(color);
+				std::vector<Vector2> axisPoints;
+				axisPoints.reserve(static_cast<size_t>(m_axisPointCount * 2 + 1));
+
+				for (real i = -m_axisPointCount; i <= m_axisPointCount; i += 1.0)
+				{
+					axisPoints.emplace_back(Vector2(0, i));
+					axisPoints.emplace_back(Vector2(i, 0));
+				}
+				RendererQtImpl::renderPoints(painter, this, axisPoints, pen);
+				color = Qt::green;
+				color.setAlphaF(0.7);
+				pen.setColor(color);
+				pen.setWidth(1);
+				RendererQtImpl::renderLine(painter, this, Vector2(0, -m_axisPointCount), Vector2(0, m_axisPointCount), pen);
+				RendererQtImpl::renderLine(painter, this, Vector2(-m_axisPointCount, 0), Vector2(m_axisPointCount, 0), pen);
+
 				drawGridScaleLine(painter);
 			}
 			if (m_contactVisible)
@@ -166,16 +165,7 @@ namespace Physics2D
 	{
 		m_bodyVisible = bodyVisible;
 	}
-
-	bool Camera::axisVisible() const
-	{
-		return m_axisVisible;
-	}
-
-	void Camera::setAxisVisible(bool axisVisible)
-	{
-		m_axisVisible = axisVisible;
-	}
+	
 
 	bool Camera::gridScaleLineVisible() const
 	{

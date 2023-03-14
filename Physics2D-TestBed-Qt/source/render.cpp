@@ -1,4 +1,4 @@
-#include "include/render.h"
+#include "render.h"
 
 namespace Physics2D
 {
@@ -319,7 +319,7 @@ namespace Physics2D
         Vector2 pa = pointJoint->primitive().bodyA->toWorldPoint(pointJoint->primitive().localPointA);
         Vector2 pb = pointJoint->primitive().targetPoint;
 
-        QColor pColor = Qt::gray;
+        QColor pColor = QColor(255, 138, 101);
         QPen p(pColor, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
         QColor color = Qt::green;
@@ -336,7 +336,7 @@ namespace Physics2D
         Vector2 pa = pointJoint->primitive().bodyA->position();
         Vector2 pb = pointJoint->primitive().targetPoint;
 
-        QColor pColor = Qt::gray;
+        QColor pColor = QColor(255, 138, 101);
         QPen p(pColor, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
         QColor color = Qt::green;
@@ -366,7 +366,7 @@ namespace Physics2D
         Vector2 pa = revoluteJoint->primitive().bodyA->toWorldPoint(revoluteJoint->primitive().localPointA);
         Vector2 pb = revoluteJoint->primitive().bodyB->toWorldPoint(revoluteJoint->primitive().localPointB);
 
-        QColor pColor = Qt::gray;
+        QColor pColor = QColor(255, 138, 101);
         QPen p(pColor, 8, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin);
 
         QColor color = Qt::green;
