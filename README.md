@@ -7,7 +7,8 @@ The testbed of Physics2D based on Qt.
 Use [XMake](https://github.com/xmake-io/xmake) to build project:
 
 ```
-xmake build
+xmake -w
+xmake install -o ./bin
 ```
 
 # Requirement
